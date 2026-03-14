@@ -1,5 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useAuth } from "@/components/AuthProvider";
+import { UserMenu } from "@/components/UserMenu";
+import { RequestModal } from "@/components/RequestModal";
+import { Toast } from "@/components/Toast";
 
 const classes = [
   {
@@ -43,8 +47,36 @@ const fmt = (n: number) => n.toLocaleString("ko-KR");
 
 export default function Home() {
   const [hovered, setHovered] = useState<number | null>(null);
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [subscribedClasses, setSubscribedClasses] = useState<Set<number>>(new Set());
+  const { user, signInWithKakao } = useAuth();
   const hero = classes[0];
   const openClasses = classes.filter((c) => c.status === "open");
+
+  const handleAlert = useCallback(async (classId: number) => {
+    if (!user) {
+      localStorage.setItem("pending_alert_class_id", String(classId));
+      signInWithKakao();
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ classId: String(classId) }),
+      });
+      if (res.ok) {
+        setSubscribedClasses((prev) => new Set(prev).add(classId));
+        setToastMessage("알림이 완료되었어요! 🔔");
+        setShowToast(true);
+      }
+    } catch {
+      // silent fail for MVP
+    }
+  }, [user, signInWithKakao]);
 
   return (
     <div>
@@ -83,13 +115,7 @@ export default function Home() {
 
           {/* CTA */}
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <button className="btn-push" style={{
-              height: 44, padding: "0 24px", borderRadius: 10,
-              background: "var(--black)", color: "var(--white)",
-              fontSize: 14, fontWeight: 700,
-            }}>
-              시작하기
-            </button>
+            <UserMenu />
             <button className="mobile-only" style={{
               width: 44, height: 44, borderRadius: 10, background: "var(--white)",
               border: "var(--border)", fontSize: 20, cursor: "pointer", fontFamily: "inherit",
@@ -154,7 +180,7 @@ export default function Home() {
               }}>
                 클래스 둘러보기 →
               </button>
-              <button className="btn-push-sm" style={{
+              <button className="btn-push-sm" onClick={() => setShowRequestModal(true)} style={{
                 height: 56, padding: "0 28px", borderRadius: 12,
                 background: "var(--white)", color: "var(--black)",
                 fontSize: 16, fontWeight: 700,
@@ -385,14 +411,22 @@ export default function Home() {
                       <span style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em" }}>
                         {fmt(cls.price)}원
                       </span>
-                      <button className="btn-push-sm" style={{
-                        height: 36, padding: "0 14px", borderRadius: 8,
-                        background: isH ? "var(--black)" : "var(--yellow)",
-                        color: isH ? "var(--yellow)" : "var(--black)",
-                        fontSize: 13, fontWeight: 700,
-                        transition: "all 0.2s ease",
-                      }}>
-                        🔔 알림
+                      <button
+                        className="btn-push-sm"
+                        onClick={(e) => { e.stopPropagation(); handleAlert(cls.id); }}
+                        style={{
+                          height: 36, padding: "0 14px", borderRadius: 8,
+                          background: subscribedClasses.has(cls.id)
+                            ? "var(--charcoal)"
+                            : isH ? "var(--black)" : "var(--yellow)",
+                          color: subscribedClasses.has(cls.id)
+                            ? "var(--yellow)"
+                            : isH ? "var(--yellow)" : "var(--black)",
+                          fontSize: 13, fontWeight: 700,
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        {subscribedClasses.has(cls.id) ? "✅ 완료" : "🔔 알림"}
                       </button>
                     </div>
                   </div>
@@ -467,7 +501,7 @@ export default function Home() {
               <p style={{ fontSize: 15, opacity: 0.5, lineHeight: 1.7, marginBottom: 28, maxWidth: 400 }}>
                 원하는 Notion 강의 주제를 제안하고 공감 투표를 받으면, 운영팀이 강사를 섭외하여 클래스를 만듭니다.
               </p>
-              <button className="btn-push" style={{
+              <button className="btn-push" onClick={() => setShowRequestModal(true)} style={{
                 height: 52, padding: "0 28px", borderRadius: 12,
                 background: "var(--black)", color: "var(--white)",
                 fontSize: 15, fontWeight: 800,
@@ -573,6 +607,8 @@ export default function Home() {
         </div>
       </footer>
 
+      <RequestModal isOpen={showRequestModal} onClose={() => setShowRequestModal(false)} />
+      <Toast message={toastMessage} isVisible={showToast} onClose={() => setShowToast(false)} />
     </div>
   );
 }
