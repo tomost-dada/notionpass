@@ -4,6 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { UserMenu } from "@/components/UserMenu";
 import { RequestModal } from "@/components/RequestModal";
 import { Toast } from "@/components/Toast";
+import { AlertModal } from "@/components/AlertModal";
 
 const classes = [
   {
@@ -51,32 +52,28 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [subscribedClasses, setSubscribedClasses] = useState<Set<number>>(new Set());
+  const [alertClass, setAlertClass] = useState<typeof classes[0] | null>(null);
   const { user, signInWithKakao } = useAuth();
   const hero = classes[0];
   const openClasses = classes.filter((c) => c.status === "open");
 
   const handleAlert = useCallback(async (classId: number) => {
-    if (!user) {
-      localStorage.setItem("pending_alert_class_id", String(classId));
-      signInWithKakao();
-      return;
-    }
+    const cls = classes.find((c) => c.id === classId);
+    setSubscribedClasses((prev) => new Set(prev).add(classId));
+    if (cls) setAlertClass(cls);
 
-    try {
-      const res = await fetch("/api/notifications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ classId: String(classId) }),
-      });
-      if (res.ok) {
-        setSubscribedClasses((prev) => new Set(prev).add(classId));
-        setToastMessage("알림이 완료되었어요! 🔔");
-        setShowToast(true);
+    if (user) {
+      try {
+        await fetch("/api/notifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ classId: String(classId) }),
+        });
+      } catch {
+        // silent fail for MVP
       }
-    } catch {
-      // silent fail for MVP
     }
-  }, [user, signInWithKakao]);
+  }, [user]);
 
   return (
     <div>
@@ -105,17 +102,31 @@ export default function Home() {
 
           {/* Links */}
           <div className="desktop-only" style={{ alignItems: "center", gap: 32 }}>
-            {["클래스", "요청", "소개"].map((t) => (
-              <a key={t} href="#" style={{
+            {[
+              { label: "소개", href: "#hero" },
+              { label: "클래스", href: "#classes" },
+              { label: "요청", href: "#request" },
+            ].map((t) => (
+              <a key={t.label} href={t.href} style={{
                 fontSize: 15, fontWeight: 600, color: "var(--black)",
                 textDecoration: "none", letterSpacing: "-0.2px",
-              }}>{t}</a>
+              }}>{t.label}</a>
             ))}
           </div>
 
           {/* CTA */}
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <UserMenu />
+            {user ? (
+              <UserMenu />
+            ) : (
+              <button className="btn-push" onClick={signInWithKakao} style={{
+                height: 44, padding: "0 24px", borderRadius: 10,
+                background: "var(--black)", color: "var(--white)",
+                fontSize: 14, fontWeight: 700,
+              }}>
+                로그인
+              </button>
+            )}
             <button className="mobile-only" style={{
               width: 44, height: 44, borderRadius: 10, background: "var(--white)",
               border: "var(--border)", fontSize: 20, cursor: "pointer", fontFamily: "inherit",
@@ -126,7 +137,7 @@ export default function Home() {
       </nav>
 
       {/* ━━━ HERO ━━━ */}
-      <section className="dot-pattern" style={{
+      <section id="hero" className="dot-pattern" style={{
         background: "var(--yellow)", paddingTop: 140, paddingBottom: 80,
         borderBottom: "var(--border)",
       }}>
@@ -255,7 +266,7 @@ export default function Home() {
       </div>
 
       {/* ━━━ FEATURED ━━━ */}
-      <section style={{
+      <section id="classes" style={{
         background: "var(--white)", borderBottom: "var(--border)",
         padding: "64px 0",
       }}>
@@ -481,7 +492,7 @@ export default function Home() {
       </section>
 
       {/* ━━━ REQUEST ━━━ */}
-      <section style={{
+      <section id="request" style={{
         background: "var(--white)", borderBottom: "var(--border)",
         padding: "64px 0",
       }}>
@@ -609,6 +620,15 @@ export default function Home() {
 
       <RequestModal isOpen={showRequestModal} onClose={() => setShowRequestModal(false)} />
       <Toast message={toastMessage} isVisible={showToast} onClose={() => setShowToast(false)} />
+      {alertClass && (
+        <AlertModal
+          isOpen={!!alertClass}
+          onClose={() => setAlertClass(null)}
+          classTitle={alertClass.title}
+          count={alertClass.count}
+          goal={alertClass.goal}
+        />
+      )}
     </div>
   );
 }
