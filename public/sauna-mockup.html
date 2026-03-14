@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사우나 패스 — 게임 UI 목업</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0f;
+    color: #fff;
+    font-family: -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    display: flex;
+    gap: 24px;
+    padding: 32px;
+    min-height: 100vh;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── 공통 폰 프레임 ── */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: #12121a;
+    border-radius: 44px;
+    border: 2px solid #2a2a3a;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .screen-label {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  /* ── 상태바 ── */
+  .statusbar {
+    padding: 14px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ccc;
+  }
+
+  /* ── 탭바 ── */
+  .tabbar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: rgba(18,18,26,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid #1e1e2e;
+    display: flex;
+    padding-bottom: 12px;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 10px;
+    color: #444;
+    cursor: pointer;
+  }
+  .tab.active { color: #e8843a; }
+  .tab-icon { font-size: 22px; }
+
+  /* ────────────────────────────
+     SCREEN 1: 탐험 지도
+  ──────────────────────────── */
+  .map-bg {
+    width: 100%;
+    height: 560px;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(232,132,58,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(80,120,200,0.06) 0%, transparent 50%),
+      #0d1117;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 격자 패턴 (지도 느낌) */
+  .map-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* 지역 블록 */
+  .map-region {
+    position: absolute;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .region-conquered {
+    background: rgba(232,132,58,0.15);
+    border: 1px solid rgba(232,132,58,0.3);
+    color: #e8843a;
+  }
+  .region-locked {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.08);
+    color: #333;
+  }
+
+  /* 사우나 핀 */
+  .pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  .pin-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .pin-dot span { transform: rotate(45deg); }
+  .pin-label {
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px #000;
+  }
+  .pin.unlocked .pin-dot { background: linear-gradient(135deg, #e8843a, #c0522a); }
+  .pin.unlocked .pin-label { color: #e8843a; }
+  .pin.locked .pin-dot { background: #1e1e2e; border: 1px solid #2a2a3a; }
+  .pin.locked .pin-label { color: #444; }
+
+  /* 지도 오버레이 헤더 */
+  .map-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 16px;
+    background: linear-gradient(to bottom, rgba(13,17,23,0.9) 0%, transparent 100%);
+    z-index: 10;
+  }
+  .map-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .map-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #1e1e2e;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e8843a, #f0a060);
+    border-radius: 2px;
+    width: 28%;
+  }
+  .progress-text {
+    font-size: 11px;
+    color: #e8843a;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* 지도 하단 카드 */
+  .map-bottom-card {
+    position: absolute;
+    bottom: 80px; left: 16px; right: 16px;
+    background: rgba(20,20,32,0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid #2a2a3a;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sauna-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a1a2e, #2a1a3e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .sauna-info { flex: 1; }
+  .sauna-name { font-size: 14px; font-weight: 700; }
+  .sauna-meta { font-size: 11px; color: #666; margin-top: 3px; }
+  .checkin-btn {
+    background: linear-gradient(135deg, #e8843a, #c0522a);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ────────────────────────────
+     SCREEN 2: 체크인 카드
+  ──────────────────────────── */
+  .checkin-screen {
+    padding: 20px 20px 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  .checkin-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    background: #1e1e2e;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .checkin-title { font-size: 20px; font-weight: 800; }
+
+  .sauna-card-preview {
+    background: linear-gradient(135deg, #1a1a2e, #0f1a2e);
+    border: 1px solid #2a2a3a;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .sauna-emoji { font-size: 32px; }
+  .sauna-card-info h3 { font-size: 16px; font-weight: 700; }
+  .sauna-card-info p { font-size: 12px; color: #666; margin-top: 4px; }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .input-field {
+    background: #1a1a2e;
+    border: 1px solid #2a2a3a;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #fff;
+    width: 100%;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .input-field .placeholder { color: #444; flex: 1; }
+  .input-icon { font-size: 18px; }
+
+  .tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .tag {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #2a2a3a;
+    background: #1a1a2e;
+    color: #666;
+  }
+  .tag.selected {
+    background: rgba(232,132,58,0.15);
+    border-color: rgba(232,132,58,0.4);
+    color: #e8843a;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #e8843a, #c0522a);
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(232,132,58,0.3);
+    margin-top: 4px;
+  }
+
+  /* ────────────────────────────
+     SCREEN 3: 프로필 (RPG)
+  ──────────────────────────── */
+  .profile-screen {
+    padding: 0;
+    height: calc(100% - 80px);
+    overflow: hidden;
+  }
+
+  .profile-hero {
+    background: linear-gradient(180deg, #1a0a2e 0%, #12121a 100%);
+    padding: 20px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .profile-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(232,132,58,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .profile-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #2a1a4e, #1a2a4e);
+    border: 2px solid rgba(232,132,58,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 0 24px rgba(232,132,58,0.2);
+    flex-shrink: 0;
+  }
+  .profile-name { font-size: 20px; font-weight: 800; }
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,132,58,0.15);
+    border: 1px solid rgba(232,132,58,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e8843a;
+    margin-top: 6px;
+  }
+  .total-stamps {
+    font-size: 13px;
+    color: #555;
+    margin-top: 4px;
+  }
+  .total-stamps span { color: #fff; font-weight: 700; }
+
+  /* 스탯 바 */
+  .stat-section { margin-top: 4px; }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: #888;
+    width: 64px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .stat-bar {
+    flex: 1;
+    height: 6px;
+    background: #1e1e2e;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .stat-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .stat-fill.heat { background: linear-gradient(90deg, #e8843a, #f0a060); }
+  .stat-fill.know { background: linear-gradient(90deg, #4a9af0, #70b8ff); }
+  .stat-fill.stam { background: linear-gradient(90deg, #4ac060, #70e080); }
+  .stat-val {
+    font-size: 11px;
+    color: #666;
+    width: 28px;
+    text-align: right;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* 뱃지 섹션 */
+  .profile-body {
+    padding: 20px;
+  }
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .badge-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: 1px solid;
+  }
+  .badge-icon.earned {
+    background: rgba(232,132,58,0.1);
+    border-color: rgba(232,132,58,0.3);
+    box-shadow: 0 0 16px rgba(232,132,58,0.15);
+  }
+  .badge-icon.locked-badge {
+    background: #1a1a2e;
+    border-color: #2a2a3a;
+    filter: grayscale(1);
+    opacity: 0.4;
+  }
+  .badge-name { font-size: 9px; color: #666; text-align: center; line-height: 1.3; }
+
+  /* 최근 체크인 */
+  .recent-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .checkin-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .checkin-item:last-child { border-bottom: none; }
+  .checkin-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #e8843a;
+    flex-shrink: 0;
+  }
+  .checkin-place { font-size: 13px; font-weight: 600; }
+  .checkin-date { font-size: 11px; color: #555; margin-top: 2px; }
+  .checkin-xp {
+    margin-left: auto;
+    font-size: 11px;
+    color: #e8843a;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* 범례 */
+  .legend {
+    text-align: center;
+    font-size: 11px;
+    color: #333;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── SCREEN 1: 탐험 지도 ── -->
+<div>
+  <p class="screen-label">🗺 탐험 지도</p>
+  <div class="phone">
+    <div style="height:100%;">
+      <!-- 지도 배경 -->
+      <div class="map-bg">
+        <!-- 헤더 오버레이 -->
+        <div class="map-header">
+          <div class="statusbar" style="padding:0;margin-bottom:10px;">
+            <span>9:41</span>
+            <span>●●● 📶 🔋</span>
+          </div>
+          <div class="map-title">🔥 사우나 도장깨기</div>
+          <div class="map-progress">
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <div class="progress-text">7 / 24 해금</div>
+          </div>
+        </div>
+
+        <!-- 지역 블록들 -->
+        <div class="map-region region-conquered" style="top:140px;left:40px;width:120px;height:80px;display:flex;align-items:center;justify-content:center;">강남구</div>
+        <div class="map-region region-conquered" style="top:160px;left:170px;width:100px;height:70px;display:flex;align-items:center;justify-content:center;">마포구</div>
+        <div class="map-region region-locked" style="top:240px;left:60px;width:110px;height:75px;display:flex;align-items:center;justify-content:center;">종로구</div>
+        <div class="map-region region-locked" style="top:255px;left:185px;width:110px;height:75px;display:flex;align-items:center;justify-content:center;">용산구</div>
+        <div class="map-region region-locked" style="top:340px;left:100px;width:160px;height:70px;display:flex;align-items:center;justify-content:center;">송파구</div>
+
+        <!-- 핀들 -->
+        <div class="pin unlocked" style="top:148px;left:72px;">
+          <div class="pin-dot"><span>🛁</span></div>
+          <div class="pin-label">오아시스 사우나</div>
+        </div>
+        <div class="pin unlocked" style="top:165px;left:192px;">
+          <div class="pin-dot"><span>🔥</span></div>
+          <div class="pin-label">힐링 스파</div>
+        </div>
+        <div class="pin locked" style="top:248px;left:90px;">
+          <div class="pin-dot"><span>🔒</span></div>
+          <div class="pin-label">???</div>
+        </div>
+        <div class="pin locked" style="top:260px;left:205px;">
+          <div class="pin-dot"><span>🔒</span></div>
+          <div class="pin-label">???</div>
+        </div>
+        <div class="pin locked" style="top:348px;left:155px;">
+          <div class="pin-dot"><span>🔒</span></div>
+          <div class="pin-label">???</div>
+        </div>
+      </div>
+
+      <!-- 하단 선택 카드 -->
+      <div class="map-bottom-card">
+        <div class="sauna-thumb">♨️</div>
+        <div class="sauna-info">
+          <div class="sauna-name">오아시스 사우나</div>
+          <div class="sauna-meta">강남구 · 평균 ₩12,000 · 추천 94%</div>
+        </div>
+        <button class="checkin-btn">체크인</button>
+      </div>
+
+      <!-- 탭바 -->
+      <div class="tabbar">
+        <div class="tab">
+          <span class="tab-icon">🏠</span>홈
+        </div>
+        <div class="tab active">
+          <span class="tab-icon">🗺</span>지도
+        </div>
+        <div class="tab">
+          <span class="tab-icon">🏆</span>랭킹
+        </div>
+        <div class="tab">
+          <span class="tab-icon">🤝</span>같이가요
+        </div>
+        <div class="tab">
+          <span class="tab-icon">👤</span>나
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="legend">잠긴 사우나 🔒 → 방문하면 해금</p>
+</div>
+
+<!-- ── SCREEN 2: 체크인 ── -->
+<div>
+  <p class="screen-label">✍️ 체크인 카드 작성</p>
+  <div class="phone">
+    <div style="padding:52px 0 0;">
+      <div class="checkin-screen">
+        <div class="statusbar" style="padding:0;margin-bottom:16px;">
+          <span>9:41</span>
+          <span>●●● 📶 🔋</span>
+        </div>
+
+        <div class="checkin-header">
+          <div class="back-btn">←</div>
+          <div class="checkin-title">방문 인증</div>
+        </div>
+
+        <!-- 선택된 사우나 -->
+        <div class="sauna-card-preview">
+          <div class="sauna-emoji">♨️</div>
+          <div class="sauna-card-info">
+            <h3>오아시스 사우나</h3>
+            <p>📍 서울 강남구</p>
+          </div>
+        </div>
+
+        <!-- 입력 필드들 -->
+        <p class="section-title">입장 가격</p>
+        <div class="input-field">
+          <span class="input-icon">💰</span>
+          <span style="color:#fff;font-weight:600;">12,000</span>
+          <span style="color:#555;margin-left:2px;">원</span>
+        </div>
+
+        <p class="section-title">특징 태그</p>
+        <div class="tag-group">
+          <div class="tag selected">🚿 수건제공</div>
+          <div class="tag selected">🌿 천연온천</div>
+          <div class="tag">🅿️ 주차가능</div>
+          <div class="tag">🚫 혼탕없음</div>
+          <div class="tag">🧖 찜질방</div>
+          <div class="tag">❄️ 냉탕</div>
+        </div>
+
+        <p class="section-title">방문 한줄평</p>
+        <div class="input-field" style="border-color:rgba(232,132,58,0.4);">
+          <span class="input-icon">✍️</span>
+          <span style="color:#ccc;font-size:13px;">뜨끈한 온탕이 최고였어요 🔥</span>
+        </div>
+
+        <button class="submit-btn">🎴 인증 카드 발급하기</button>
+      </div>
+    </div>
+
+    <!-- 탭바 -->
+    <div class="tabbar">
+      <div class="tab"><span class="tab-icon">🏠</span>홈</div>
+      <div class="tab active"><span class="tab-icon">🗺</span>지도</div>
+      <div class="tab"><span class="tab-icon">🏆</span>랭킹</div>
+      <div class="tab"><span class="tab-icon">🤝</span>같이가요</div>
+      <div class="tab"><span class="tab-icon">👤</span>나</div>
+    </div>
+  </div>
+  <p class="legend">입력 완료 → 인증 카드 즉시 발급</p>
+</div>
+
+<!-- ── SCREEN 3: 프로필 (RPG) ── -->
+<div>
+  <p class="screen-label">🎮 RPG 프로필</p>
+  <div class="phone">
+    <div class="profile-screen">
+      <div class="statusbar" style="padding:14px 24px 0;margin-bottom:0;">
+        <span>9:41</span>
+        <span>●●● 📶 🔋</span>
+      </div>
+
+      <!-- 프로필 히어로 -->
+      <div class="profile-hero">
+        <div class="profile-top">
+          <div class="avatar">🧖</div>
+          <div>
+            <div class="profile-name">사우나킹</div>
+            <div class="level-badge">⚔️ 사우나 고수</div>
+            <div class="total-stamps">총 스탬프 <span>17개</span> 달성</div>
+          </div>
+        </div>
+
+        <!-- RPG 스탯 -->
+        <div class="stat-section">
+          <div class="stat-row">
+            <span class="stat-label">🔥 열기 내성</span>
+            <div class="stat-bar"><div class="stat-fill heat" style="width:72%;"></div></div>
+            <span class="stat-val">17</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">📚 탕 지식</span>
+            <div class="stat-bar"><div class="stat-fill know" style="width:72%;"></div></div>
+            <span class="stat-val">17</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">💪 스태미나</span>
+            <div class="stat-bar"><div class="stat-fill stam" style="width:72%;"></div></div>
+            <span class="stat-val">17</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 획득 뱃지 -->
+      <div class="profile-body">
+        <p class="section-title">획득 뱃지</p>
+        <div class="badge-grid">
+          <div class="badge-item">
+            <div class="badge-icon earned">🏅</div>
+            <div class="badge-name">첫 방문</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-icon earned">🌏</div>
+            <div class="badge-name">지역 탐험가</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-icon earned">🔥</div>
+            <div class="badge-name">이달의 단골</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-icon locked-badge">👑</div>
+            <div class="badge-name">마스터 달성</div>
+          </div>
+        </div>
+
+        <!-- 최근 체크인 -->
+        <p class="recent-title">최근 방문</p>
+        <div class="checkin-item">
+          <div class="checkin-dot"></div>
+          <div>
+            <div class="checkin-place">오아시스 사우나</div>
+            <div class="checkin-date">오늘 · 강남구</div>
+          </div>
+          <div class="checkin-xp">+3 XP</div>
+        </div>
+        <div class="checkin-item">
+          <div class="checkin-dot" style="background:#666;"></div>
+          <div>
+            <div class="checkin-place">힐링 스파</div>
+            <div class="checkin-date">3일 전 · 마포구</div>
+          </div>
+          <div class="checkin-xp">+3 XP</div>
+        </div>
+        <div class="checkin-item">
+          <div class="checkin-dot" style="background:#666;"></div>
+          <div>
+            <div class="checkin-place">용왕탕</div>
+            <div class="checkin-date">1주 전 · 종로구</div>
+          </div>
+          <div class="checkin-xp">+3 XP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭바 -->
+    <div class="tabbar">
+      <div class="tab"><span class="tab-icon">🏠</span>홈</div>
+      <div class="tab"><span class="tab-icon">🗺</span>지도</div>
+      <div class="tab"><span class="tab-icon">🏆</span>랭킹</div>
+      <div class="tab"><span class="tab-icon">🤝</span>같이가요</div>
+      <div class="tab active"><span class="tab-icon">👤</span>나</div>
+    </div>
+  </div>
+  <p class="legend">체크인마다 스탯 +1 · 미션 달성 시 뱃지</p>
+</div>
+
+</body>
+</html>

@@ -1,71 +1,34 @@
 "use client";
 import { useState } from "react";
 
-/* ─── Data ─── */
 const classes = [
   {
-    id: 1,
-    emoji: "🗃️",
-    title: "Notion 데이터베이스\n완전 정복",
-    subtitle: "필터, 수식, 관계형 DB까지 — 실무 바로 적용",
-    instructor: "김민준",
-    instructorRole: "Notion 한국 커뮤니티 운영",
-    date: "4월 12일 토",
-    time: "AM 9:00–11:00",
-    status: "confirmed" as const,
-    count: 14,
-    goal: 10,
-    price: 49000,
-    tag: "데이터베이스",
-    color: "#e8342e",
+    id: 1, emoji: "🗃️", title: "Notion 데이터베이스 완전 정복",
+    sub: "필터, 수식, 관계형 DB까지 — 실무 바로 적용",
+    instructor: "김민준", date: "4월 12일 토 AM 9–11시",
+    status: "confirmed" as const, count: 14, goal: 10, price: 49000,
+    tag: "데이터베이스", color: "#e8342e",
   },
   {
-    id: 2,
-    emoji: "🤖",
-    title: "Notion AI로\n업무 자동화하기",
-    subtitle: "AI 블록과 프롬프트로 반복 업무를 절반으로",
-    instructor: "박소연",
-    instructorRole: "프로덕트 매니저",
-    date: "미정",
-    time: "AM 9:00–11:00",
-    status: "open" as const,
-    count: 23,
-    goal: 15,
-    price: 49000,
-    tag: "AI 활용",
-    color: "#3b82f6",
+    id: 2, emoji: "🤖", title: "Notion AI로 업무 자동화하기",
+    sub: "AI 블록과 프롬프트로 반복 업무를 절반으로",
+    instructor: "박소연", date: "미정",
+    status: "open" as const, count: 23, goal: 15, price: 49000,
+    tag: "AI 활용", color: "#3b82f6",
   },
   {
-    id: 3,
-    emoji: "🏢",
-    title: "팀을 위한\nNotion 위키 만들기",
-    subtitle: "온보딩부터 프로젝트 관리까지 팀 구조 설계",
-    instructor: "강사 모집중",
-    instructorRole: "",
-    date: "미정",
-    time: "AM 9:00–11:00",
-    status: "open" as const,
-    count: 9,
-    goal: 15,
-    price: 49000,
-    tag: "팀 협업",
-    color: "#22c55e",
+    id: 3, emoji: "🏢", title: "팀을 위한 Notion 위키 만들기",
+    sub: "온보딩부터 프로젝트 관리까지 팀 구조 설계",
+    instructor: "강사 모집중", date: "미정",
+    status: "open" as const, count: 9, goal: 15, price: 49000,
+    tag: "팀 협업", color: "#22c55e",
   },
   {
-    id: 4,
-    emoji: "🧠",
-    title: "Notion으로\n개인 대시보드 구축",
-    subtitle: "할 일, 독서, 루틴, 재정까지 나만의 인생 OS",
-    instructor: "강사 모집중",
-    instructorRole: "",
-    date: "미정",
-    time: "AM 9:00–11:00",
-    status: "open" as const,
-    count: 31,
-    goal: 20,
-    price: 39000,
-    tag: "개인 생산성",
-    color: "#a855f7",
+    id: 4, emoji: "🧠", title: "Notion으로 개인 대시보드 구축",
+    sub: "할 일, 독서, 루틴, 재정까지 나만의 인생 OS",
+    instructor: "강사 모집중", date: "미정",
+    status: "open" as const, count: 31, goal: 20, price: 39000,
+    tag: "개인 생산성", color: "#a855f7",
   },
 ];
 
@@ -75,7 +38,7 @@ const requests = [
   { title: "업무 보고서를 Notion으로 자동화", votes: 6 },
 ];
 
-/* ─── Helpers ─── */
+const brands = ["ACME", "GLOBEX", "INITECH", "UMBRELLA", "CYBERDYNE", "WONKA", "STARK", "WAYNETECH"];
 const fmt = (n: number) => n.toLocaleString("ko-KR");
 
 export default function Home() {
@@ -84,379 +47,258 @@ export default function Home() {
   const openClasses = classes.filter((c) => c.status === "open");
 
   return (
-    <div className="grain" style={{ background: "var(--cream)", minHeight: "100vh" }}>
+    <div>
 
       {/* ━━━ NAV ━━━ */}
       <nav className="fade-up" style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "rgba(247,244,239,0.85)",
-        backdropFilter: "blur(20px) saturate(1.8)",
-        WebkitBackdropFilter: "blur(20px) saturate(1.8)",
-        borderBottom: "1px solid var(--border-light)",
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        height: 80, background: "var(--yellow)",
+        borderBottom: "var(--border)",
       }}>
         <div style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0 24px",
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          maxWidth: 1200, margin: "0 auto", padding: "0 32px", height: "100%",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-            <span style={{
-              fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-              fontSize: 20,
-              fontWeight: 800,
-              letterSpacing: "-0.5px",
-              color: "var(--charcoal)",
-            }}>
-              class<span style={{ color: "var(--red)" }}>kickstarter</span>
-            </span>
-            <span style={{
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase" as const,
-              color: "var(--text-tertiary)",
-              marginLeft: 4,
-            }}>
-              SAT 9AM
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{
+              width: 40, height: 40, background: "var(--black)", borderRadius: 8,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 20, color: "var(--yellow)",
+            }}>⚡</div>
+            <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px" }}>
+              Notion<span style={{ color: "var(--charcoal)" }}>Pass</span>
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <span className="desktop-only" style={{ alignItems: "center", gap: 24 }}>
-              <NavLink active>클래스</NavLink>
-              <NavLink>요청</NavLink>
-              <NavLink>소개</NavLink>
-            </span>
-            <button style={{
-              height: 36,
-              padding: "0 18px",
-              borderRadius: 8,
-              background: "var(--charcoal)",
-              color: "white",
-              border: "none",
-              fontSize: 13,
-              fontWeight: 600,
-              fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-              cursor: "pointer",
-              letterSpacing: "-0.2px",
-              transition: "background 0.2s ease",
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = "var(--charcoal-light)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "var(--charcoal)")}
-            >
-              로그인
-            </button>
-            {/* Mobile hamburger */}
-            <button className="mobile-only" style={{
-              width: 36, height: 36, borderRadius: 8,
-              background: "transparent", border: "1px solid var(--border-light)",
-              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, fontFamily: "inherit",
+
+          {/* Links */}
+          <div className="desktop-only" style={{ alignItems: "center", gap: 32 }}>
+            {["클래스", "요청", "소개"].map((t) => (
+              <a key={t} href="#" style={{
+                fontSize: 15, fontWeight: 600, color: "var(--black)",
+                textDecoration: "none", letterSpacing: "-0.2px",
+              }}>{t}</a>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <button className="btn-push" style={{
+              height: 44, padding: "0 24px", borderRadius: 10,
+              background: "var(--black)", color: "var(--white)",
+              fontSize: 14, fontWeight: 700,
             }}>
-              ☰
+              시작하기
             </button>
+            <button className="mobile-only" style={{
+              width: 44, height: 44, borderRadius: 10, background: "var(--white)",
+              border: "var(--border)", fontSize: 20, cursor: "pointer", fontFamily: "inherit",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>☰</button>
           </div>
         </div>
       </nav>
 
       {/* ━━━ HERO ━━━ */}
-      <section style={{
-        background: "var(--charcoal)",
-        position: "relative",
-        overflow: "hidden",
+      <section className="dot-pattern" style={{
+        background: "var(--yellow)", paddingTop: 140, paddingBottom: 80,
+        borderBottom: "var(--border)",
       }}>
-        {/* Gradient orbs */}
-        <div style={{
-          position: "absolute",
-          top: "-20%",
-          right: "-10%",
-          width: "50%",
-          height: "140%",
-          background: "radial-gradient(ellipse at center, rgba(232,52,46,0.12) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute",
-          bottom: "-30%",
-          left: "-5%",
-          width: "40%",
-          height: "100%",
-          background: "radial-gradient(ellipse at center, rgba(59,130,246,0.06) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-
-        <div style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "80px 24px 72px",
-          position: "relative",
+        <div className="hero-grid fade-up-1" style={{
+          maxWidth: 1200, margin: "0 auto", padding: "0 32px",
         }}>
-          {/* Eyebrow */}
-          <div className="fade-up" style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 100,
-            padding: "6px 14px 6px 8px",
-            marginBottom: 28,
-          }}>
-            <span style={{
-              background: "var(--red)",
-              color: "white",
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 100,
-              letterSpacing: "0.04em",
+          {/* Left */}
+          <div>
+            <div className="btn-push-sm" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: "var(--white)", borderRadius: 100,
+              padding: "8px 16px 8px 10px", marginBottom: 28,
             }}>
-              NEW
-            </span>
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>
-              4월 첫 번째 클래스가 확정되었습니다
-            </span>
+              <span style={{
+                background: "var(--black)", color: "var(--yellow)",
+                fontSize: 10, fontWeight: 800, padding: "3px 8px",
+                borderRadius: 100, letterSpacing: "0.05em",
+              }}>NEW</span>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>
+                4월 첫 번째 클래스 확정
+              </span>
+            </div>
+
+            <h1 style={{
+              fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 900,
+              lineHeight: 1.05, letterSpacing: "-0.04em",
+              marginBottom: 20,
+            }}>
+              수요가 모이면,
+              <br />
+              <span style={{
+                WebkitTextStroke: "2px black",
+                color: "transparent",
+              }}>강의</span>가 열립니다
+            </h1>
+
+            <p style={{
+              fontSize: "clamp(15px, 1.5vw, 18px)", lineHeight: 1.7,
+              color: "var(--charcoal)", opacity: 0.7,
+              maxWidth: 440, marginBottom: 36,
+            }}>
+              원하는 Notion 강의에 알림을 신청하세요.
+              충분한 수요가 모이면 클래스가 열립니다.
+            </p>
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <button className="btn-push" style={{
+                height: 56, padding: "0 32px", borderRadius: 12,
+                background: "var(--black)", color: "var(--white)",
+                fontSize: 16, fontWeight: 800,
+              }}>
+                클래스 둘러보기 →
+              </button>
+              <button className="btn-push-sm" style={{
+                height: 56, padding: "0 28px", borderRadius: 12,
+                background: "var(--white)", color: "var(--black)",
+                fontSize: 16, fontWeight: 700,
+              }}>
+                주제 제안하기
+              </button>
+            </div>
           </div>
 
-          {/* Main headline */}
-          <h1 className="fade-up-1" style={{
-            fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-            fontSize: "clamp(36px, 5.5vw, 64px)",
-            fontWeight: 800,
-            lineHeight: 1.08,
-            letterSpacing: "-0.03em",
-            color: "white",
-            maxWidth: 680,
-            marginBottom: 20,
+          {/* Right: Browser mockup */}
+          <div className="fade-up-2" style={{
+            background: "var(--white)", border: "var(--border)", borderRadius: 16,
+            boxShadow: "var(--shadow-lg)", overflow: "hidden",
           }}>
-            수요가 모이면,
-            <br />
-            <span style={{ color: "var(--red)" }}>강의</span>가 열립니다
-          </h1>
-
-          <p className="fade-up-2" style={{
-            fontSize: "clamp(15px, 1.5vw, 18px)",
-            lineHeight: 1.65,
-            color: "rgba(255,255,255,0.45)",
-            maxWidth: 440,
-            marginBottom: 40,
-            fontWeight: 400,
-          }}>
-            원하는 Notion 강의에 알림을 신청하세요.
-            <br />
-            충분한 수요가 모이면, 매주 토요일 아침 9시에 클래스가 열립니다.
-          </p>
-
-          {/* Stats row */}
-          <div className="fade-up-3" style={{
-            display: "flex",
-            gap: 48,
-          }}>
-            {[
-              { n: "4", label: "준비 중인 클래스" },
-              { n: "77", label: "알림 신청" },
-              { n: "SAT", label: "매주 토요일 9AM" },
-            ].map((s) => (
-              <div key={s.label}>
-                <div style={{
-                  fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                  fontSize: 28,
-                  fontWeight: 700,
-                  color: "white",
-                  letterSpacing: "-0.02em",
-                }}>
-                  {s.n}
+            {/* Title bar */}
+            <div style={{
+              background: "var(--black)", padding: "12px 16px",
+              display: "flex", alignItems: "center", gap: 8,
+            }}>
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#febc2e" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840" }} />
+            </div>
+            {/* Dashboard content */}
+            <div style={{ padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div style={{
+                background: "var(--sage)", borderRadius: 10, padding: 20,
+                border: "var(--border)", gridColumn: "1 / -1",
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 8 }}>
+                  이번 달 신청 현황
                 </div>
-                <div style={{
-                  fontSize: 12,
-                  color: "rgba(255,255,255,0.3)",
-                  fontWeight: 500,
-                  marginTop: 2,
-                }}>
-                  {s.label}
-                </div>
+                <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: "-0.03em" }}>77명</div>
+                <div style={{ fontSize: 13, opacity: 0.6, marginTop: 4 }}>전월 대비 +34%</div>
               </div>
-            ))}
+              {[
+                { label: "활성 클래스", val: "4개", bg: "var(--yellow)" },
+                { label: "개설 확정", val: "1개", bg: "var(--charcoal)" },
+              ].map((c) => (
+                <div key={c.label} style={{
+                  background: c.bg, borderRadius: 10, padding: 16,
+                  border: "var(--border)",
+                  color: c.bg === "var(--charcoal)" ? "var(--white)" : "var(--black)",
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 6 }}>
+                    {c.label}
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 900 }}>{c.val}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ━━━ FEATURED CLASS ━━━ */}
-      <section style={{
-        maxWidth: 1120,
-        margin: "0 auto",
-        padding: "56px 24px 0",
+      {/* ━━━ MARQUEE ━━━ */}
+      <div style={{
+        background: "var(--charcoal)", borderBottom: "var(--border)",
+        padding: "16px 0", overflow: "hidden",
       }}>
-        <SectionHeader
-          tag="FEATURED"
-          title="개설 확정"
-          description="수요가 충분히 모여 확정된 클래스입니다"
-          className="fade-up-3"
-        />
+        <div className="marquee-track">
+          {[...brands, ...brands].map((b, i) => (
+            <span key={i} style={{
+              fontSize: 18, fontWeight: 800, color: "var(--sage)",
+              opacity: 0.5, letterSpacing: "0.05em",
+              padding: "0 40px", whiteSpace: "nowrap" as const,
+            }}>
+              {b}
+            </span>
+          ))}
+        </div>
+      </div>
 
-        <div className="fade-up-4 featured-grid" style={{
-          marginTop: 28,
-          background: "white",
-          borderRadius: 20,
-          border: "1px solid var(--border-light)",
-          boxShadow: "var(--card-shadow)",
-          overflow: "hidden",
-        }}>
-          {/* Left: visual */}
-          <div style={{
-            background: "var(--charcoal)",
-            padding: 48,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            position: "relative",
-            overflow: "hidden",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: 140,
-              opacity: 0.08,
-              filter: "blur(1px)",
-              pointerEvents: "none",
-            }}>
-              {hero.emoji}
-            </div>
-            <div>
-              <span style={{
-                display: "inline-block",
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase" as const,
-                color: "var(--red)",
-                background: "rgba(232,52,46,0.12)",
-                padding: "5px 10px",
-                borderRadius: 6,
-                marginBottom: 20,
-              }}>
-                {hero.tag}
-              </span>
-              <div style={{
-                fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                fontSize: 32,
-                fontWeight: 700,
-                color: "white",
-                lineHeight: 1.2,
-                letterSpacing: "-0.02em",
-                whiteSpace: "pre-line",
-              }}>
-                {hero.title}
-              </div>
-            </div>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              marginTop: 32,
-            }}>
-              <div style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-              }}>
-                👤
-              </div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "white" }}>{hero.instructor}</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>{hero.instructorRole}</div>
-              </div>
-            </div>
+      {/* ━━━ FEATURED ━━━ */}
+      <section style={{
+        background: "var(--white)", borderBottom: "var(--border)",
+        padding: "64px 0",
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+          <div className="fade-up-3" style={{ marginBottom: 28 }}>
+            <span style={{
+              display: "inline-block", background: "var(--yellow)",
+              border: "var(--border)", borderRadius: 8, padding: "6px 14px",
+              fontSize: 12, fontWeight: 800, letterSpacing: "0.05em",
+              textTransform: "uppercase" as const, marginBottom: 12,
+            }}>개설 확정</span>
+            <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.03em" }}>
+              {hero.title}
+            </h2>
           </div>
 
-          {/* Right: details */}
-          <div style={{ padding: "clamp(24px, 4vw, 44px)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <div>
-              <p style={{
-                fontSize: 15,
-                lineHeight: 1.7,
-                color: "var(--text-secondary)",
-                marginBottom: 32,
-              }}>
-                {hero.subtitle}
-              </p>
+          <div className="card-brutal-lg fade-up-3" style={{
+            background: "var(--yellow)", borderRadius: 16,
+            display: "grid", gridTemplateColumns: "1fr 1fr", overflow: "hidden",
+          }}>
+            {/* Left */}
+            <div className="dot-pattern" style={{ padding: 48, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ fontSize: 80, marginBottom: 20 }}>{hero.emoji}</div>
+              <div>
+                <p style={{ fontSize: 16, lineHeight: 1.7, marginBottom: 20, opacity: 0.7 }}>
+                  {hero.sub}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 10,
+                    background: "var(--black)", border: "var(--border)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 20, color: "var(--yellow)",
+                  }}>👤</div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700 }}>{hero.instructor}</div>
+                    <div style={{ fontSize: 12, opacity: 0.5 }}>Notion 한국 커뮤니티 운영</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {/* Right */}
+            <div style={{ background: "var(--white)", padding: 48, borderLeft: "var(--border)" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 28 }}>
                 {[
-                  { label: "일정", value: hero.date, sub: hero.time },
-                  { label: "수강료", value: `${fmt(hero.price)}원`, sub: "부가세 포함" },
-                  { label: "신청 현황", value: `${hero.count}명`, sub: "목표 달성" },
-                  { label: "진행 방식", value: "Zoom", sub: "온라인 라이브" },
-                ].map((item) => (
-                  <div key={item.label} style={{
-                    padding: "16px",
-                    background: "var(--cream)",
-                    borderRadius: 12,
+                  { label: "일정", val: "4월 12일 토", sub: "AM 9:00–11:00" },
+                  { label: "수강료", val: `${fmt(hero.price)}원`, sub: "부가세 포함" },
+                  { label: "신청 현황", val: `${hero.count}명 완료`, sub: `목표 ${hero.goal}명 달성` },
+                  { label: "진행 방식", val: "Zoom Live", sub: "온라인 라이브" },
+                ].map((m) => (
+                  <div key={m.label} style={{
+                    background: "var(--gray-light)", border: "var(--border)",
+                    borderRadius: 10, padding: 16,
                   }}>
-                    <div style={{
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase" as const,
-                      color: "var(--text-tertiary)",
-                      marginBottom: 8,
-                    }}>
-                      {item.label}
+                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", opacity: 0.5, marginBottom: 8 }}>
+                      {m.label}
                     </div>
-                    <div style={{
-                      fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      color: "var(--charcoal)",
-                      letterSpacing: "-0.02em",
-                    }}>
-                      {item.value}
-                    </div>
-                    <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>
-                      {item.sub}
-                    </div>
+                    <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.02em" }}>{m.val}</div>
+                    <div style={{ fontSize: 12, opacity: 0.5, marginTop: 2 }}>{m.sub}</div>
                   </div>
                 ))}
               </div>
-            </div>
 
-            <div style={{ marginTop: 28, display: "flex", gap: 10 }}>
-              <button style={{
-                flex: 1,
-                height: 52,
-                borderRadius: 12,
-                background: "var(--red)",
-                border: "none",
-                color: "white",
-                fontSize: 15,
-                fontWeight: 700,
-                fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                cursor: "pointer",
-                letterSpacing: "-0.2px",
-                boxShadow: "0 4px 20px rgba(232,52,46,0.3)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "var(--red-dark)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "var(--red)";
-                e.currentTarget.style.transform = "";
-              }}
-              >
+              <button className="btn-push" style={{
+                width: "100%", height: 56, borderRadius: 12,
+                background: "var(--black)", color: "var(--white)",
+                fontSize: 16, fontWeight: 800,
+              }}>
                 결제하기 →
               </button>
             </div>
@@ -465,416 +307,272 @@ export default function Home() {
       </section>
 
       {/* ━━━ OPEN CLASSES ━━━ */}
-      <section style={{
-        maxWidth: 1120,
-        margin: "0 auto",
-        padding: "64px 24px 0",
+      <section className="dot-pattern" style={{
+        background: "var(--yellow)", borderBottom: "var(--border)",
+        padding: "64px 0",
       }}>
-        <SectionHeader
-          tag={`${openClasses.length} CLASSES`}
-          title="알림 신청 중"
-          description="수요가 모이면 개설됩니다. 알림을 신청해주세요."
-          className="fade-up-4"
-        />
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+          <div className="fade-up-4" style={{ marginBottom: 28, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+            <div>
+              <span style={{
+                display: "inline-block", background: "var(--charcoal)", color: "var(--yellow)",
+                border: "var(--border)", borderRadius: 8, padding: "6px 14px",
+                fontSize: 12, fontWeight: 800, letterSpacing: "0.05em",
+                textTransform: "uppercase" as const, marginBottom: 12,
+              }}>{openClasses.length} Classes</span>
+              <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.03em" }}>
+                알림 신청 중
+              </h2>
+            </div>
+            <span style={{ fontSize: 14, opacity: 0.5 }}>수요가 모이면 개설됩니다</span>
+          </div>
 
-        <div className="fade-up-5 class-grid" style={{
-          marginTop: 28,
-        }}>
-          {openClasses.map((cls) => {
-            const isHovered = hovered === cls.id;
-            const pct = Math.min(100, Math.round((cls.count / cls.goal) * 100));
-            return (
-              <div
-                key={cls.id}
-                onMouseEnter={() => setHovered(cls.id)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  background: "white",
-                  borderRadius: 16,
-                  border: "1px solid var(--border-light)",
-                  boxShadow: isHovered ? "var(--card-shadow-hover)" : "var(--card-shadow)",
-                  transform: isHovered ? "translateY(-4px)" : "",
-                  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-                  cursor: "pointer",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Card top */}
-                <div style={{
-                  height: 160,
-                  background: `linear-gradient(135deg, ${cls.color}12 0%, ${cls.color}06 100%)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 56,
-                  position: "relative",
-                }}>
-                  <span style={{
-                    position: "absolute",
-                    top: 14,
-                    left: 14,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase" as const,
-                    color: cls.color,
-                    background: `${cls.color}12`,
-                    padding: "4px 10px",
-                    borderRadius: 6,
-                  }}>
-                    {cls.tag}
-                  </span>
-                  {cls.emoji}
-                </div>
-
-                {/* Card body */}
-                <div style={{ padding: "20px 22px 24px" }}>
-                  <h3 style={{
-                    fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                    fontSize: 17,
-                    fontWeight: 700,
-                    lineHeight: 1.35,
-                    letterSpacing: "-0.02em",
-                    color: "var(--charcoal)",
-                    marginBottom: 6,
-                    whiteSpace: "pre-line",
-                  }}>
-                    {cls.title}
-                  </h3>
-                  <p style={{
-                    fontSize: 13,
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.5,
-                    marginBottom: 20,
-                  }}>
-                    {cls.subtitle}
-                  </p>
-
-                  {/* Progress bar */}
-                  <div style={{ marginBottom: 16 }}>
-                    <div style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: 6,
-                    }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)" }}>
-                        {cls.count}명 신청
-                      </span>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-tertiary)" }}>
-                        목표 {cls.goal}명
-                      </span>
-                    </div>
-                    <div style={{
-                      height: 4,
-                      background: "var(--cream)",
-                      borderRadius: 2,
-                      overflow: "hidden",
-                    }}>
-                      <div style={{
-                        width: `${pct}%`,
-                        height: "100%",
-                        background: pct >= 100
-                          ? "var(--red)"
-                          : `linear-gradient(90deg, ${cls.color}, ${cls.color}aa)`,
-                        borderRadius: 2,
-                        transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-                      }} />
-                    </div>
-                  </div>
-
+          <div className="feature-grid fade-up-5">
+            {openClasses.map((cls) => {
+              const isH = hovered === cls.id;
+              const pct = Math.min(100, Math.round((cls.count / cls.goal) * 100));
+              return (
+                <div
+                  key={cls.id}
+                  className="card-brutal"
+                  onMouseEnter={() => setHovered(cls.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  style={{
+                    background: "var(--white)", borderRadius: 12,
+                    overflow: "hidden", cursor: "pointer",
+                  }}
+                >
                   <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    height: 140, background: isH ? "var(--yellow)" : "var(--gray-light)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 56, borderBottom: "var(--border)",
+                    transition: "background 0.2s ease",
                   }}>
+                    {cls.emoji}
+                  </div>
+                  <div style={{ padding: "20px 22px 24px" }}>
                     <span style={{
-                      fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      color: "var(--charcoal)",
-                      letterSpacing: "-0.02em",
-                    }}>
-                      {fmt(cls.price)}원
-                    </span>
-                    <button style={{
-                      height: 36,
-                      padding: "0 16px",
-                      borderRadius: 8,
-                      background: isHovered ? "var(--charcoal)" : "var(--cream)",
-                      color: isHovered ? "white" : "var(--charcoal)",
-                      border: "none",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
-                    }}>
-                      🔔 알림 신청
-                    </button>
+                      display: "inline-block", fontSize: 10, fontWeight: 800,
+                      letterSpacing: "0.06em", textTransform: "uppercase" as const,
+                      background: `${cls.color}18`, color: cls.color,
+                      padding: "3px 8px", borderRadius: 6, marginBottom: 10,
+                      border: `1.5px solid ${cls.color}30`,
+                    }}>{cls.tag}</span>
+
+                    <h3 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6, lineHeight: 1.3 }}>
+                      {cls.title}
+                    </h3>
+                    <p style={{ fontSize: 13, opacity: 0.5, lineHeight: 1.5, marginBottom: 16 }}>
+                      {cls.sub}
+                    </p>
+
+                    {/* Progress */}
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700 }}>{cls.count}명 신청</span>
+                        <span style={{ fontSize: 12, opacity: 0.4 }}>목표 {cls.goal}명</span>
+                      </div>
+                      <div style={{ height: 8, background: "var(--gray-light)", borderRadius: 4, border: "1.5px solid #000", overflow: "hidden" }}>
+                        <div style={{
+                          width: `${pct}%`, height: "100%",
+                          background: pct >= 100 ? "var(--black)" : cls.color,
+                          transition: "width 0.6s ease",
+                        }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em" }}>
+                        {fmt(cls.price)}원
+                      </span>
+                      <button className="btn-push-sm" style={{
+                        height: 36, padding: "0 14px", borderRadius: 8,
+                        background: isH ? "var(--black)" : "var(--yellow)",
+                        color: isH ? "var(--yellow)" : "var(--black)",
+                        fontSize: 13, fontWeight: 700,
+                        transition: "all 0.2s ease",
+                      }}>
+                        🔔 알림
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* ━━━ REQUEST ━━━ */}
+      {/* ━━━ HOW IT WORKS ━━━ */}
       <section style={{
-        maxWidth: 1120,
-        margin: "0 auto",
-        padding: "72px 24px 0",
+        background: "var(--charcoal)", borderBottom: "var(--border)",
+        padding: "72px 0",
       }}>
-        <div className="request-grid" style={{
-          background: "var(--charcoal)",
-          borderRadius: 24,
-          padding: "clamp(28px, 5vw, 56px)",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          {/* Glow */}
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+          <h2 style={{ fontSize: 32, fontWeight: 900, color: "var(--white)", letterSpacing: "-0.03em", marginBottom: 48, textAlign: "center" as const }}>
+            어떻게 진행되나요?
+          </h2>
           <div style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "50%",
-            height: "100%",
-            background: "radial-gradient(ellipse at top right, rgba(232,52,46,0.08) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }} />
-
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <span style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase" as const,
-              color: "var(--red)",
-              marginBottom: 16,
-              display: "block",
-            }}>
-              REQUEST A CLASS
-            </span>
-            <h2 style={{
-              fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-              fontSize: "clamp(24px, 3vw, 36px)",
-              fontWeight: 800,
-              color: "white",
-              lineHeight: 1.15,
-              letterSpacing: "-0.03em",
-              marginBottom: 16,
-            }}>
-              듣고 싶은 강의를
-              <br />
-              직접 제안하세요
-            </h2>
-            <p style={{
-              fontSize: 15,
-              color: "rgba(255,255,255,0.4)",
-              lineHeight: 1.7,
-              marginBottom: 28,
-              maxWidth: 360,
-            }}>
-              원하는 Notion 강의 주제를 제안하고 공감 투표를 받으면, 운영팀이 강사를 섭외하여 클래스를 만듭니다.
-            </p>
-            <button style={{
-              height: 48,
-              padding: "0 28px",
-              borderRadius: 10,
-              background: "var(--red)",
-              border: "none",
-              color: "white",
-              fontSize: 14,
-              fontWeight: 700,
-              fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-              cursor: "pointer",
-              boxShadow: "0 4px 20px rgba(232,52,46,0.35)",
-              transition: "all 0.2s ease",
-              letterSpacing: "-0.2px",
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--red-dark)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "var(--red)"; e.currentTarget.style.transform = ""; }}
-            >
-              + 주제 제안하기
-            </button>
-          </div>
-
-          <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase" as const,
-              color: "rgba(255,255,255,0.3)",
-              marginBottom: 4,
-            }}>
-              현재 제안된 주제
-            </div>
-            {requests.map((req, i) => (
-              <div key={req.title} style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                borderRadius: 12,
-                padding: "16px 20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                transition: "all 0.2s ease",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <span style={{
-                    fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.2)",
-                    width: 24,
-                  }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span style={{ fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.75)" }}>
-                    {req.title}
-                  </span>
+            display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 32,
+            position: "relative",
+          }}>
+            {[
+              { step: "01", title: "알림 신청", desc: "듣고 싶은 강의에 알림을 신청하세요", color: "var(--sage)", emoji: "🔔" },
+              { step: "02", title: "수요 달성", desc: "충분한 수요가 모이면 개설이 확정됩니다", color: "var(--yellow)", emoji: "🎯" },
+              { step: "03", title: "클래스 참여", desc: "결제 후 Zoom 링크를 이메일로 받으세요", color: "var(--white)", emoji: "🎓" },
+            ].map((s) => (
+              <div key={s.step} style={{ textAlign: "center" as const }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: "50%",
+                  border: `4px solid ${s.color}`, background: "var(--gray-dark)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 32, margin: "0 auto 20px",
+                  boxShadow: `0 0 20px ${s.color}40`,
+                }}>
+                  {s.emoji}
                 </div>
-                <button style={{
-                  height: 32,
-                  padding: "0 14px",
-                  borderRadius: 8,
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "rgba(255,255,255,0.5)",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = "var(--red)";
-                  e.currentTarget.style.borderColor = "var(--red)";
-                  e.currentTarget.style.color = "white";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.5)";
-                }}
-                >
-                  ▲ {req.votes}
-                </button>
+                <div style={{ fontSize: 12, fontWeight: 800, color: s.color, letterSpacing: "0.1em", marginBottom: 8 }}>
+                  STEP {s.step}
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--white)", marginBottom: 8, letterSpacing: "-0.02em" }}>
+                  {s.title}
+                </div>
+                <div style={{ fontSize: 14, color: "var(--sage)", opacity: 0.7, lineHeight: 1.6 }}>
+                  {s.desc}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ━━━ FOOTER ━━━ */}
-      <footer className="footer-inner" style={{
-        maxWidth: 1120,
-        margin: "0 auto",
-        padding: "56px 24px 40px",
+      {/* ━━━ REQUEST ━━━ */}
+      <section style={{
+        background: "var(--white)", borderBottom: "var(--border)",
+        padding: "64px 0",
       }}>
-        <div style={{
-          fontSize: 13,
-          color: "var(--text-tertiary)",
-          fontWeight: 400,
-        }}>
-          © 2026 classkickstarter — 매주 토요일 아침, 노션을 배웁니다
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
+            <div>
+              <span style={{
+                display: "inline-block", background: "var(--yellow)",
+                border: "var(--border)", borderRadius: 8, padding: "6px 14px",
+                fontSize: 12, fontWeight: 800, letterSpacing: "0.05em",
+                textTransform: "uppercase" as const, marginBottom: 16,
+              }}>Request</span>
+              <h2 style={{ fontSize: 36, fontWeight: 900, letterSpacing: "-0.03em", marginBottom: 16, lineHeight: 1.15 }}>
+                듣고 싶은 강의를
+                <br />직접 제안하세요
+              </h2>
+              <p style={{ fontSize: 15, opacity: 0.5, lineHeight: 1.7, marginBottom: 28, maxWidth: 400 }}>
+                원하는 Notion 강의 주제를 제안하고 공감 투표를 받으면, 운영팀이 강사를 섭외하여 클래스를 만듭니다.
+              </p>
+              <button className="btn-push" style={{
+                height: 52, padding: "0 28px", borderRadius: 12,
+                background: "var(--black)", color: "var(--white)",
+                fontSize: 15, fontWeight: 800,
+              }}>
+                + 주제 제안하기
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", opacity: 0.4, marginBottom: 4 }}>
+                현재 제안된 주제
+              </div>
+              {requests.map((r, i) => (
+                <div key={r.title} className="card-brutal" style={{
+                  background: "var(--white)", borderRadius: 10, padding: "16px 20px",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    <span style={{ fontSize: 16, fontWeight: 900, opacity: 0.15, width: 28 }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span style={{ fontSize: 14, fontWeight: 600 }}>{r.title}</span>
+                  </div>
+                  <button className="btn-push-sm" style={{
+                    height: 34, padding: "0 14px", borderRadius: 8,
+                    background: "var(--yellow)", fontSize: 13, fontWeight: 800,
+                  }}>
+                    ▲ {r.votes}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div style={{ display: "flex", gap: 20 }}>
-          {["이용약관", "개인정보처리방침"].map((t) => (
-            <a key={t} href="#" style={{
-              fontSize: 12,
-              color: "var(--text-tertiary)",
-              textDecoration: "none",
-              fontWeight: 500,
-              transition: "color 0.15s ease",
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = "var(--charcoal)")}
-            onMouseLeave={e => (e.currentTarget.style.color = "var(--text-tertiary)")}
-            >
-              {t}
-            </a>
+      </section>
+
+      {/* ━━━ FINAL CTA ━━━ */}
+      <section className="dot-pattern" style={{
+        background: "var(--yellow)", borderBottom: "var(--border)",
+        padding: "80px 0", textAlign: "center" as const,
+      }}>
+        <div style={{ maxWidth: 600, margin: "0 auto", padding: "0 32px" }}>
+          <h2 style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 900, letterSpacing: "-0.03em", marginBottom: 16, lineHeight: 1.15 }}>
+            Notion을
+            <br />제대로 배웁니다
+          </h2>
+          <p style={{ fontSize: 16, opacity: 0.6, marginBottom: 32 }}>
+            수요 기반으로 열리는 원데이클래스에 참여하세요
+          </p>
+          <button className="btn-push" style={{
+            height: 60, padding: "0 40px", borderRadius: 12,
+            background: "var(--black)", color: "var(--white)",
+            fontSize: 18, fontWeight: 800,
+          }}>
+            지금 시작하기 ⚡
+          </button>
+        </div>
+      </section>
+
+      {/* ━━━ FOOTER ━━━ */}
+      <footer style={{
+        background: "var(--charcoal)", padding: "56px 0 40px",
+      }}>
+        <div className="footer-grid" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <div style={{
+                width: 32, height: 32, background: "var(--yellow)", borderRadius: 6,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 16, border: "var(--border)",
+              }}>⚡</div>
+              <span style={{ fontSize: 18, fontWeight: 800, color: "var(--white)" }}>NotionPass</span>
+            </div>
+            <p style={{ fontSize: 13, color: "var(--sage)", opacity: 0.5, lineHeight: 1.7 }}>
+              수요가 모이면 강의가 열립니다.
+              <br />수요가 모이면 강의가 열립니다.
+            </p>
+          </div>
+          {[
+            { title: "서비스", links: ["클래스", "요청", "FAQ"] },
+            { title: "회사", links: ["소개", "블로그", "채용"] },
+            { title: "법적", links: ["이용약관", "개인정보처리방침"] },
+          ].map((col) => (
+            <div key={col.title}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: "var(--sage)", letterSpacing: "0.08em", textTransform: "uppercase" as const, marginBottom: 16 }}>
+                {col.title}
+              </div>
+              {col.links.map((l) => (
+                <a key={l} href="#" style={{
+                  display: "block", fontSize: 14, color: "var(--sage)", opacity: 0.5,
+                  textDecoration: "none", marginBottom: 10,
+                }}>{l}</a>
+              ))}
+            </div>
           ))}
+        </div>
+        <div style={{
+          maxWidth: 1200, margin: "32px auto 0", padding: "20px 32px 0",
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+          fontSize: 12, color: "var(--sage)", opacity: 0.3,
+        }}>
+          © 2026 NotionPass. All rights reserved.
         </div>
       </footer>
 
-    </div>
-  );
-}
-
-/* ─── Sub-components ─── */
-
-function NavLink({ children, active }: { children: React.ReactNode; active?: boolean }) {
-  return (
-    <a href="#" style={{
-      fontSize: 14,
-      fontWeight: active ? 600 : 400,
-      color: active ? "var(--charcoal)" : "var(--text-tertiary)",
-      textDecoration: "none",
-      letterSpacing: "-0.2px",
-      transition: "color 0.15s ease",
-      position: "relative",
-    }}>
-      {children}
-      {active && (
-        <span style={{
-          position: "absolute",
-          bottom: -2,
-          left: 0,
-          right: 0,
-          height: 1.5,
-          background: "var(--charcoal)",
-          borderRadius: 1,
-        }} />
-      )}
-    </a>
-  );
-}
-
-function SectionHeader({ tag, title, description, className }: {
-  tag: string;
-  title: string;
-  description: string;
-  className?: string;
-}) {
-  return (
-    <div className={`${className || ""} section-header`}>
-      <div>
-        <span style={{
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase" as const,
-          color: "var(--red)",
-          marginBottom: 8,
-          display: "block",
-        }}>
-          {tag}
-        </span>
-        <h2 style={{
-          fontFamily: "'Pretendard Variable', Pretendard, sans-serif",
-          fontSize: 28,
-          fontWeight: 800,
-          letterSpacing: "-0.03em",
-          color: "var(--charcoal)",
-          lineHeight: 1.1,
-        }}>
-          {title}
-        </h2>
-      </div>
-      <span style={{
-        fontSize: 14,
-        color: "var(--text-tertiary)",
-        fontWeight: 400,
-      }}>
-        {description}
-      </span>
     </div>
   );
 }
